@@ -3,7 +3,10 @@ def bernardo(n, m, x, k):
     for i in range(n):
         y, a = [int(l) for l in input().rstrip().split()]
         if y - 1e-6 > m/k:
-            print((m//k + 1) * (a // (m//k + 1) ) + (m//k + 1), flush= True)
+            for b in range(a, a+y):
+                if b % ((m//k) + 1) == 0:
+                    print(b, flush=True)
+                    break
         else:
             print(a, flush = True)
 
