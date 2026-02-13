@@ -1,17 +1,15 @@
-def ray(r, c, dr, dc, n, single=False):
-    line = []
-    rr, cc = r + dr, c + dc
-    while rr < n and 0 <= cc < n:
-        line.append((rr, cc))
+def first_spot_in_ray(r0, c0, grid, dr, dc, single=False):
+    r, c = r0 + dr, c0 + dc
+    while r < len(grid) and 0 <= c < len(grid[0]):
+        if grid[r][c] >= 0:
+            return grid[r][c]
         if single:
             break
-        rr += dr
-        cc += dc
-    return line
+        r += dr
+        c += dc
+    return -1
 
 def first_connections(spots, grid, type):
-    graph = []
-
     moves = {
         'K': ([(0, 1), (1, -1), (1, 0), (1, 1)], True),
         'Q': ([(0, 1), (1, -1), (1, 0), (1, 1)], False),
@@ -21,12 +19,12 @@ def first_connections(spots, grid, type):
     }
     dirs, single = moves[type]
 
-    for k, (r1, c1) in enumerate(spots):
+    graph = []
+    for k, (r0, c0) in enumerate(spots):
         for dr, dc in dirs:
-            for r2, c2 in ray(r1, c1, dr, dc, n, single=single):
-                if grid[r2][c2] >= 0:
-                    graph.append((k, grid[r2][c2]))
-                    break
+            h = first_spot_in_ray(r0, c0, grid, dr, dc, single=single)
+            if h != -1:
+                graph.append((k, h))
     return graph
 
 def find(i, par):
@@ -76,6 +74,7 @@ for k in range(1, m):
         connected = False
         break
 
+# Reduce the tree leaf by leaf
 if connected:
     print("YES")
     leaves = [k for k in range(m) if len(adj[k]) == 1]
